@@ -22,12 +22,12 @@ float Alpha = 0.1611328125;
 /******************************************************************************/
 // PID Parameters//
 float C_out = 0, Set_Point, M_Variable = 0, Error = 0,  Previous_Error;
-float dt = 0.1,  Kp = 5, Ki = 0.1, Kd = 0.1, Integral = 0, Derivative = 0;
+float dt = 0.1,  Kp = 5, Ki = 0.01, Kd = 0.1, Integral = 0, Derivative = 0;
 /******************************************************************************/
 
 int8 SPI_Flag = 0, Byte_Count = 0, Rx, Tx, Cmand, ProbeID = 1,count = 0;
-int8 Version = 5,SP = 0, SP_H = 0;
-unsigned int Value, Duty, Err_cnt = 0;
+unsigned int8 Version = 5,SP = 0, SP_H = 0;
+unsigned int Value, Duty = 0, Err_cnt = 0;
 unsigned char MV , MVH;
 
 /******************************************************************************/
@@ -87,6 +87,8 @@ void  timer1_isr(void)
 {
     M_Variable= ((float)read_adc() * Alpha) + 12;
     Error = Set_Point - M_Variable;
+
+    Integral = Integral + (Error * dt);
 }
 
 void main()
@@ -117,17 +119,21 @@ void main()
       
       Value = (unsigned int16)M_Variable;
       MV  = (unsigned char)Value;
-      MVH = Value >> 8;       
+      MVH = Value >> 8; 
       
-      C_out = (Kp * Error);
+      if(Integral > 500)
+          Integral = 500;
+      else if(Integral < 0)
+          Integral = 0;
+      
+      C_out = (Kp * Error) + (Ki * Integral);
       if(C_out > 500)
           C_out = 500;
       else if(C_out < 0)
           C_out = 0;
-      else
-      { 
-        Duty = (unsigned int)C_out;
+
+        Duty = (int)C_out;
         set_pwm_duty(2,Duty);
-      }
+
     }
 }   
