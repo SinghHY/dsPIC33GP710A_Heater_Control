@@ -22,7 +22,7 @@ float Alpha = 0.1611328125;
 /******************************************************************************/
 // PID Parameters//
 float C_out = 0, Set_Point, M_Variable = 0, Error = 0,  Previous_Error;
-float dt = 0.1,  Kp = 5, Ki = 0.01, Kd = 0.1, Integral = 0, Derivative = 0;
+float dt = 0.1,  Kp = 5, Ki = 0.05, Kd = 0.1, Integral = 0, Derivative = 0;
 /******************************************************************************/
 
 int8 SPI_Flag = 0, Byte_Count = 0, Rx, Tx, Cmand, ProbeID = 1,count = 0;
