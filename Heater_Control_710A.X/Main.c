@@ -11,7 +11,7 @@
 #include <33FJ256GP710A.h>
 #fuses XT,NOWDT,NOPROTECT
 #device ADC = 12 
-#use delay(clock = 100 MHz, crystal = 40MHz)
+#use delay(clock = 100MHz, crystal = 40MHz)
 #use spi(SLAVE, SPI2, BITS = 8, MODE = 1, ENABLE = PIN_G9, stream = SPI_2)
 
 
@@ -21,13 +21,13 @@
 float Alpha = 0.1611328125;
 /******************************************************************************/
 // PID Parameters//
-float C_out = 0, Set_Point, M_Variable = 0, Error = 0,  Previous_Error;
-float dt = 0.1,  Kp = 5, Ki = 0.05, Kd = 0.1, Integral = 0, Derivative = 0;
+float C_out = 0, M_Variable = 0, Error = 0,  Previous_Error;
+float dt = 0.01,  DTM, Kp = 10, Ki = 0.5, Kd = 2, Integral = 11, Derivative = 0;
 /******************************************************************************/
 
 int8 SPI_Flag = 0, Byte_Count = 0, Rx, Tx, Cmand, ProbeID = 1,count = 0;
-unsigned int8 Version = 5,SP = 0, SP_H = 0;
-unsigned int Value, Duty = 0, Err_cnt = 0;
+unsigned int8 Version = 2,SP = 0, SP_H = 0;
+unsigned int Value, Duty = 0, Err_cnt = 0, ViewIntegral, ViewError, Set_Point, Old_SP;
 unsigned char MV , MVH;
 
 /******************************************************************************/
@@ -85,9 +85,13 @@ void spi2_slave_isr(void)
 #INT_TIMER1 fast
 void  timer1_isr(void) 
 {
-    M_Variable= ((float)read_adc() * Alpha) + 12;
+    M_Variable= ((float)read_adc() * Alpha);
     Error = Set_Point - M_Variable;
+    if(Old_SP != Set_Point || Integral < 0)
+            Integral = 0;
 
+    Old_SP = Set_Point;
+    if(Error < 10)
     Integral = Integral + (Error * dt);
 }
 
@@ -100,6 +104,8 @@ void main()
    
    // Timer 1 for 10 ms INT when clock is 100MHz
    setup_timer1(TMR_INTERNAL | TMR_DIV_BY_64, 7812);
+   // Timer 1 for 1ms INT when clock is 100MHz
+   //setup_timer1(TMR_INTERNAL | TMR_DIV_BY_64, 781);
    
    setup_timer2(TMR_INTERNAL | TMR_DIV_BY_64, 500);
    setup_compare(2, COMPARE_PWM | COMPARE_TIMER2);
@@ -108,6 +114,8 @@ void main()
    enable_interrupts(INT_TIMER1);
    enable_interrupts(INT_SPI2);
    enable_interrupts(INTR_GLOBAL);
+   
+   DTM = 1/dt;
   
    while(1)
     {
@@ -121,17 +129,21 @@ void main()
       MV  = (unsigned char)Value;
       MVH = Value >> 8; 
       
-      if(Integral > 500)
-          Integral = 500;
-      else if(Integral < 0)
-          Integral = 0;
+
+      /*if(Integral > 1000)
+          Integral = 1000;*/
+
       
+      ViewIntegral = (unsigned int)Integral;
+      ViewError = (unsigned int)Error;
       C_out = (Kp * Error) + (Ki * Integral);
+     
       if(C_out > 500)
           C_out = 500;
       else if(C_out < 0)
           C_out = 0;
-
+      
+      //  Version = (unsigned int8)C_out;
         Duty = (int)C_out;
         set_pwm_duty(2,Duty);
 
