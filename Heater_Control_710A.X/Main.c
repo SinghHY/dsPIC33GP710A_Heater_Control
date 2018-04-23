@@ -85,7 +85,7 @@ void spi2_slave_isr(void)
 #INT_TIMER1 fast
 void  timer1_isr(void) 
 {
-    M_Variable= ((float)read_adc() * Alpha);
+    M_Variable= ((float)read_adc() * Alpha) - 6;  // 6 is the offset
     Error = Set_Point - M_Variable;
     if(Old_SP != Set_Point || Integral < 0)
             Integral = 0;
