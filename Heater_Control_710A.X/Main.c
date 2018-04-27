@@ -22,14 +22,17 @@ float Alpha = 0.1611328125;
 /******************************************************************************/
 // PID Parameters//
 float C_out = 0, M_Variable = 0, Error = 0,  Previous_Error;
+float FC_out = 0, FM_Variable = 0, FError = 0,  FPrevious_Error;
 float dt = 0.01,  DTM, Kp = 10, Ki = 0.5, Kd = 2, Integral = 11, Derivative = 0;
+float FKp = 10, FKi = 0.5, FKd = 2, FIntegral = 11, FDerivative = 0;
 /******************************************************************************/
 
 int8 SPI_Flag = 0, Byte_Count = 0, Rx, Tx, Cmand, ProbeID = 1,count = 0;
-unsigned int8 Version = 2,SP = 0, SP_H = 0;
-unsigned int Value, Duty = 0, Err_cnt = 0, ViewIntegral, ViewError, Set_Point, Old_SP;
-unsigned char MV , MVH;
+unsigned int8 Version = 2,SP = 0, SP_H = 0, FSP = 0, FSP_H = 0, FMV = 10;
+unsigned int Value, Duty = 0, FDuty = 0, Err_cnt = 0, ViewIntegral, ViewError, Set_Point, FSet_Point, Old_SP;
+unsigned char MV , MVH,  FMVH = 0;
 
+float Flange;
 /******************************************************************************/
 // 8 bits SPI
 #INT_SPI2
@@ -55,6 +58,8 @@ void spi2_slave_isr(void)
                     spi_prewrite(MV);
                 else if(Cmand == 3)
                         spi_prewrite(ProbeID);
+                else if(Cmand == 5)
+                    spi_prewrite(FMV);                
                 break;
             
             case 3: 
@@ -64,6 +69,9 @@ void spi2_slave_isr(void)
                     spi_prewrite(MVH);}
                 else if(Cmand == 3)
                    spi_prewrite(0);
+                else if(Cmand == 5)
+                    {SP_H = Rx;
+                    spi_prewrite(FMVH);}
                 break;      
             
             
@@ -73,6 +81,8 @@ void spi2_slave_isr(void)
                     SP = Rx;
                 else if(Cmand == 3)
                     spi_prewrite(50);
+                else if(Cmand == 5)
+                    FSP = Rx;
                 break;
                 
             default:
@@ -85,7 +95,8 @@ void spi2_slave_isr(void)
 #INT_TIMER1 fast
 void  timer1_isr(void) 
 {
-    M_Variable= ((float)read_adc() * Alpha) - 4;  // 6 is the offset
+    M_Variable= ((float)read_adc() * Alpha) - 4;  // 4 is the offset
+    FM_Variable = ((float)read_adc2() * Alpha);
     Error = Set_Point - M_Variable;
     if(Old_SP != Set_Point || Integral < 0)
             Integral = 0;
@@ -102,14 +113,21 @@ void main()
    setup_adc(ADC_CLOCK_INTERNAL);
    set_adc_channel(0);
    
+   setup_adc_ports2(sAN2, VSS_VDD);
+   setup_adc2(ADC_CLOCK_INTERNAL);
+   set_adc_channel2(2);
+   
    // Timer 1 for 10 ms INT when clock is 100MHz
    setup_timer1(TMR_INTERNAL | TMR_DIV_BY_64, 7812);
-   // Timer 1 for 1ms INT when clock is 100MHz
-   //setup_timer1(TMR_INTERNAL | TMR_DIV_BY_64, 781);
+
    
    setup_timer2(TMR_INTERNAL | TMR_DIV_BY_64, 500);
    setup_compare(2, COMPARE_PWM | COMPARE_TIMER2);
    set_pwm_duty(2,0);
+   
+   setup_compare(3, COMPARE_PWM | COMPARE_TIMER2);
+   set_pwm_duty(3,0);
+   
    
    enable_interrupts(INT_TIMER1);
    enable_interrupts(INT_SPI2);
@@ -125,27 +143,43 @@ void main()
       else
          Set_Point = (float)SP;
       
+    if(FSP_H)
+         FSet_Point =  (float)FSP + 256;
+      else
+         FSet_Point = (float)FSP;
+      
       Value = (unsigned int16)M_Variable;
       MV  = (unsigned char)Value;
       MVH = Value >> 8; 
       
 
-      /*if(Integral > 1000)
-          Integral = 1000;*/
+     Value = (unsigned int16)FM_Variable;
+     FMV = (unsigned char)Value;
+     FMVH = Value >> 8;
+
+     FError = FSet_Point - FM_Variable;
 
       
-      ViewIntegral = (unsigned int)Integral;
-      ViewError = (unsigned int)Error;
+      //ViewIntegral = (unsigned int)Integral;
+      //ViewError = (unsigned int)Error;
       C_out = (Kp * Error) + (Ki * Integral);
+      FC_out = (FKp * FError);
      
       if(C_out > 500)
           C_out = 500;
       else if(C_out < 0)
           C_out = 0;
-      
-      //  Version = (unsigned int8)C_out;
+     
+      if(FC_out > 500)
+          FC_out = 500;
+      else if(FC_out < 0)
+          FC_out = 0;
+        
         Duty = (int)C_out;
         set_pwm_duty(2,Duty);
+        
+        FDuty = (int)FC_out;
+        set_pwm_duty(3,FDuty);
 
     }
 }   
