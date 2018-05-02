@@ -23,13 +23,13 @@ float Alpha = 0.1611328125;
 // PID Parameters//
 float C_out = 0, M_Variable = 0, Error = 0,  Previous_Error;
 float FC_out = 0, FM_Variable = 0, FError = 0,  FPrevious_Error;
-float dt = 0.01,  DTM, Kp = 10, Ki = 0.5, Kd = 2, Integral = 11, Derivative = 0;
-float FKp = 10, FKi = 0.5, FKd = 2, FIntegral = 11, FDerivative = 0;
+float dt = 0.01,  DTM, Kp = 10, Ki = 0.5, Kd = 2, Integral = 0, Derivative = 0;
+float FKp = 20, FKi = 100, FKd = 0, FIntegral = 0, FDerivative = 0;
 /******************************************************************************/
 
-int8 SPI_Flag = 0, Byte_Count = 0, Rx, Tx, Cmand, ProbeID = 1,count = 0;
+int8 SPI_Flag = 0, Byte_Count = 0, Rx, Tx, Cmand, ProbeID = 1,count = 0, Sample = 0;
 unsigned int8 Version = 2,SP = 0, SP_H = 0, FSP = 0, FSP_H = 0, FMV = 10;
-unsigned int Value, Duty = 0, FDuty = 0, Err_cnt = 0, ViewIntegral, ViewError, Set_Point, FSet_Point, Old_SP;
+unsigned int Value, Duty = 0, FDuty = 0, Err_cnt = 0, ViewIntegral, ViewError, Set_Point, FSet_Point, Old_SP, FOld_SP;
 unsigned char MV , MVH,  FMVH = 0;
 
 float Flange;
@@ -97,6 +97,11 @@ void  timer1_isr(void)
 {
     M_Variable= ((float)read_adc() * Alpha) - 4;  // 4 is the offset
     FM_Variable = ((float)read_adc2() * Alpha);
+    Sample = 1;
+}
+
+PID_Calc_Heaters()
+{
     Error = Set_Point - M_Variable;
     if(Old_SP != Set_Point || Integral < 0)
             Integral = 0;
@@ -104,6 +109,34 @@ void  timer1_isr(void)
     Old_SP = Set_Point;
     if(Error < 10)
     Integral = Integral + (Error * dt);
+    C_out = (Kp * Error) + (Ki * Integral);
+    
+    if(C_out > 500)
+          C_out = 500;
+      else if(C_out < 0)
+          C_out = 0;
+    
+    Duty = (int)C_out;
+}
+
+PID_Calc_Flange_Heaters()
+{
+   FError = FSet_Point - FM_Variable; 
+   if(FOld_SP != FSet_Point || FIntegral < 0)
+         FIntegral = 0;
+   FOld_SP = FSet_Point;
+   
+   if(FError < 10)
+   FIntegral = FIntegral + (FError * dt);
+   
+   FC_out = (FKp * FError) + (Ki * FIntegral);
+   
+    if(FC_out > 500)
+       FC_out = 500;
+      else if(FC_out < 0)
+          FC_out = 0;
+    
+    FDuty = (int)FC_out;
 }
 
 void main()
@@ -156,29 +189,16 @@ void main()
      Value = (unsigned int16)FM_Variable;
      FMV = (unsigned char)Value;
      FMVH = Value >> 8;
-
-     FError = FSet_Point - FM_Variable;
-
-      
-      //ViewIntegral = (unsigned int)Integral;
-      //ViewError = (unsigned int)Error;
-      C_out = (Kp * Error) + (Ki * Integral);
-      FC_out = (FKp * FError);
+  
      
-      if(C_out > 500)
-          C_out = 500;
-      else if(C_out < 0)
-          C_out = 0;
-     
-      if(FC_out > 500)
-          FC_out = 500;
-      else if(FC_out < 0)
-          FC_out = 0;
-        
-        Duty = (int)C_out;
+     if(Sample)
+        {
+         PID_Calc_Heaters();
+         PID_Calc_Flange_Heaters(); 
+         Sample = 0;
+        }
+
         set_pwm_duty(2,Duty);
-        
-        FDuty = (int)FC_out;
         set_pwm_duty(3,FDuty);
 
     }
