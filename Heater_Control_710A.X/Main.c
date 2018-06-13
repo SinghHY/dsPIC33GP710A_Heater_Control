@@ -95,10 +95,7 @@ void spi2_slave_isr(void)
 #INT_TIMER1 
 void  timer1_isr(void) 
 {
-    M_Variable= ((float)read_adc() * Alpha) - 4;  // 4 is the offset
-    FM_Variable = ((float)read_adc2() * Alpha);
-    ADC_Flag = 1;
-    
+    ADC_Flag = 1;   
 }
 
 void main()
@@ -142,10 +139,13 @@ void main()
             FSet_Point =  (float)FSP + 256;
         else
             FSet_Point = (float)FSP;
-      
+    // All calculations regarding PID temperature control//  
       if(ADC_Flag)
       {
-         Error = Set_Point - M_Variable;
+        M_Variable= ((float)read_adc() * Alpha) - 4;  // 4 is the offset
+        FM_Variable = ((float)read_adc2() * Alpha);
+          
+        Error = Set_Point - M_Variable;
             if(Old_SP != Set_Point || Integral < 0)
             Integral = 0;
 
