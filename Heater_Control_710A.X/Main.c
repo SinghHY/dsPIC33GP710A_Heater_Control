@@ -29,7 +29,7 @@ float FKp = 10, FKi = 0.5, FKd = 2, FIntegral = 11, FDerivative = 0;
 
 int8 SPI_Flag = 0, ADC_Flag = 0, Byte_Count = 0, Rx, Tx, Cmand, ProbeID = 1,count = 0;
 unsigned int8 Version = 2,SP = 0, SP_H = 0, FSP = 0, FSP_H = 0;
-unsigned int Value, Duty = 0, FDuty = 0, Err_cnt = 0, ViewFMV, ViewMV, Set_Point, FSet_Point, Old_SP;
+unsigned int Value, Duty = 0, FDuty = 0, Err_cnt = 0, ViewFMV, ViewMV, Set_Point, FSet_Point, Old_SP, FOld_SP;
 unsigned char MV = 0, MVH = 0,  FMVH = 0, FMV = 10;
 
 float Flange;
@@ -152,6 +152,14 @@ void main()
          Old_SP = Set_Point;
          if(Error < 10)
          Integral = Integral + (Error * dt);
+         
+         FError = FSet_Point - FM_Variable;
+         if(FOld_SP != FSet_Point || FIntegral < 0)
+            FIntegral = 0;
+
+         FOld_SP = FSet_Point;
+         if(FError < 10)
+         FIntegral = FIntegral + (FError * dt);
          ADC_Flag = 0;
       }
       
@@ -169,7 +177,7 @@ void main()
      FError = FSet_Point - FM_Variable;
 
       C_out = (Kp * Error) + (Ki * Integral);
-      FC_out = (FKp * FError);
+      FC_out = (FKp * FError) + (FKi * FIntegral);
      
       if(C_out > 500)
           C_out = 500;
