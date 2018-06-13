@@ -27,7 +27,7 @@ float dt = 0.01,  DTM, Kp = 10, Ki = 0.5, Kd = 2, Integral = 11, Derivative = 0;
 float FKp = 10, FKi = 0.5, FKd = 2, FIntegral = 11, FDerivative = 0;
 /******************************************************************************/
 
-int8 SPI_Flag = 0, Byte_Count = 0, Rx, Tx, Cmand, ProbeID = 1,count = 0;
+int8 SPI_Flag = 0, ADC_Flag = 0, Byte_Count = 0, Rx, Tx, Cmand, ProbeID = 1,count = 0;
 unsigned int8 Version = 2,SP = 0, SP_H = 0, FSP = 0, FSP_H = 0;
 unsigned int Value, Duty = 0, FDuty = 0, Err_cnt = 0, ViewFMV, ViewMV, Set_Point, FSet_Point, Old_SP;
 unsigned char MV = 0, MVH = 0,  FMVH = 0, FMV = 10;
@@ -97,13 +97,8 @@ void  timer1_isr(void)
 {
     M_Variable= ((float)read_adc() * Alpha) - 4;  // 4 is the offset
     FM_Variable = ((float)read_adc2() * Alpha);
-    Error = Set_Point - M_Variable;
-    if(Old_SP != Set_Point || Integral < 0)
-            Integral = 0;
-
-    Old_SP = Set_Point;
-    if(Error < 10)
-    Integral = Integral + (Error * dt);
+    ADC_Flag = 1;
+    
 }
 
 void main()
@@ -147,6 +142,18 @@ void main()
             FSet_Point =  (float)FSP + 256;
         else
             FSet_Point = (float)FSP;
+      
+      if(ADC_Flag)
+      {
+         Error = Set_Point - M_Variable;
+            if(Old_SP != Set_Point || Integral < 0)
+            Integral = 0;
+
+         Old_SP = Set_Point;
+         if(Error < 10)
+         Integral = Integral + (Error * dt);
+         ADC_Flag = 0;
+      }
       
       Value = (unsigned int16)M_Variable;
       ViewMV = Value;
