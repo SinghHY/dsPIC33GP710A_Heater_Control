@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project>
+  <executable name="dist/default/production/XC_Heater_Control.X.production.elf">
+    <memory name="data">
+      <units>bytes</units>
+      <length>30720</length>
+      <used>10</used>
+      <free>30710</free>
+    </memory>
+    <memory name="program">
+      <units>bytes</units>
+      <length>261888</length>
+      <used>1770</used>
+      <free>260118</free>
+    </memory>
+  </executable>
+</project>
