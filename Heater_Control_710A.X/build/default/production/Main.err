@@ -1,16 +1,15 @@
-C:\GitRepo\dsPIC33GP710A_Heater_Control\Heater_Control_710A.X\Main.c:110:1:  Warning#203  Condition always TRUE
-C:\GitRepo\dsPIC33GP710A_Heater_Control\Heater_Control_710A.X\Main.c:133:1:  Warning#216  Interrupts disabled during call to prevent re-entrancy:  (@ADDFF)
-C:\GitRepo\dsPIC33GP710A_Heater_Control\Heater_Control_710A.X\Main.c:133:1:  Warning#216  Interrupts disabled during call to prevent re-entrancy:  (@MULFF)
-C:\GitRepo\dsPIC33GP710A_Heater_Control\Heater_Control_710A.X\Main.c:24:57:  Warning#202  Variable never used:   Previous_Error
-C:\GitRepo\dsPIC33GP710A_Heater_Control\Heater_Control_710A.X\Main.c:25:7:  Warning#202  Variable never used:   dt
-C:\GitRepo\dsPIC33GP710A_Heater_Control\Heater_Control_710A.X\Main.c:25:26:  Warning#202  Variable never used:   Ki
-C:\GitRepo\dsPIC33GP710A_Heater_Control\Heater_Control_710A.X\Main.c:25:36:  Warning#202  Variable never used:   Kd
-C:\GitRepo\dsPIC33GP710A_Heater_Control\Heater_Control_710A.X\Main.c:25:46:  Warning#202  Variable never used:   Integral
-C:\GitRepo\dsPIC33GP710A_Heater_Control\Heater_Control_710A.X\Main.c:25:60:  Warning#202  Variable never used:   Derivative
-C:\GitRepo\dsPIC33GP710A_Heater_Control\Heater_Control_710A.X\Main.c:28:6:  Warning#202  Variable never used:   SPI_Flag
-C:\GitRepo\dsPIC33GP710A_Heater_Control\Heater_Control_710A.X\Main.c:28:40:  Warning#202  Variable never used:   Tx
-C:\GitRepo\dsPIC33GP710A_Heater_Control\Heater_Control_710A.X\Main.c:28:63:  Warning#202  Variable never used:   count
-C:\GitRepo\dsPIC33GP710A_Heater_Control\Heater_Control_710A.X\Main.c:30:27:  Warning#202  Variable never used:   Err_cnt
-      Memory usage:   ROM=1%      RAM=1% - 1%
-      0 Errors,  13 Warnings.
+C:\GitRepo\dsPIC33GP710A_Heater_Control\Heater_Control_710A.X\Main.c:130:1:  Warning#203  Condition always TRUE
+C:\GitRepo\dsPIC33GP710A_Heater_Control\Heater_Control_710A.X\Main.c:24:46:  Warning#202  Variable never used:   Previous_Error
+C:\GitRepo\dsPIC33GP710A_Heater_Control\Heater_Control_710A.X\Main.c:25:49:  Warning#202  Variable never used:   FPrevious_Error
+C:\GitRepo\dsPIC33GP710A_Heater_Control\Heater_Control_710A.X\Main.c:26:43:  Warning#202  Variable never used:   Kd
+C:\GitRepo\dsPIC33GP710A_Heater_Control\Heater_Control_710A.X\Main.c:26:66:  Warning#202  Variable never used:   Derivative
+C:\GitRepo\dsPIC33GP710A_Heater_Control\Heater_Control_710A.X\Main.c:27:28:  Warning#202  Variable never used:   FKd
+C:\GitRepo\dsPIC33GP710A_Heater_Control\Heater_Control_710A.X\Main.c:27:53:  Warning#202  Variable never used:   FDerivative
+C:\GitRepo\dsPIC33GP710A_Heater_Control\Heater_Control_710A.X\Main.c:30:6:  Warning#202  Variable never used:   SPI_Flag
+C:\GitRepo\dsPIC33GP710A_Heater_Control\Heater_Control_710A.X\Main.c:30:54:  Warning#202  Variable never used:   Tx
+C:\GitRepo\dsPIC33GP710A_Heater_Control\Heater_Control_710A.X\Main.c:30:77:  Warning#202  Variable never used:   count
+C:\GitRepo\dsPIC33GP710A_Heater_Control\Heater_Control_710A.X\Main.c:32:42:  Warning#202  Variable never used:   Err_cnt
+C:\GitRepo\dsPIC33GP710A_Heater_Control\Heater_Control_710A.X\Main.c:35:7:  Warning#202  Variable never used:   Flange
+      Memory usage:   ROM=2%      RAM=2% - 2%
+      0 Errors,  12 Warnings.
 Build Successful.

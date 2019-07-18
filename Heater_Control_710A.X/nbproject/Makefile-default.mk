@@ -44,6 +44,12 @@ else
 COMPARISON_BUILD=
 endif
 
+ifdef SUB_IMAGE_ADDRESS
+
+else
+SUB_IMAGE_ADDRESS_COMMAND=
+endif
+
 # Object Directory
 OBJECTDIR=build/${CND_CONF}/${IMAGE_TYPE}
 
@@ -83,8 +89,8 @@ ifneq ($(INFORMATION_MESSAGE), )
 endif
 	${MAKE}  -f nbproject/Makefile-default.mk dist/${CND_CONF}/${IMAGE_TYPE}/Heater_Control_710A.X.${IMAGE_TYPE}.${OUTPUT_SUFFIX}
 
-MP_CC="C:\Program Files (x86)\PICC\CCSCON.exe"
-MP_LD="C:\Program Files (x86)\PICC\CCSCON.exe"
+MP_CC="C:\PROGRA~2\PICC\CCSCON.exe"
+MP_LD="C:\PROGRA~2\PICC\CCSCON.exe"
 # ------------------------------------------------------------------------------------
 # Rules for buildStep: compile
 ifeq ($(TYPE_IMAGE), DEBUG_RUN)
@@ -92,11 +98,11 @@ ${OBJECTDIR}/Main.o: Main.c  nbproject/Makefile-${CND_CONF}.mk
 	${MKDIR} ${OBJECTDIR} 
 ifeq (1,1) 
 	${MKDIR} dist/${CND_CONF}/${IMAGE_TYPE} 
-	${MP_CC}  out="${OBJECTDIR}"  Main.c +FD +DF +CC  #__DEBUG=1 +ICD +Y=9 +EA +DF +LN +T +A +M +J +EA +Z -P #__dsPIC33FJ256GP710A__=1 
+	${MP_CC}  out="${OBJECTDIR}"  Main.c +FD +DF +CC  #__DEBUG=1 +ICD +Y=9 +EA +DF +LN +T +A +M +J +EA +Z -P #__dsPIC33FJ256GP510__=1 
 	@mv ${OBJECTDIR}/Main.cof "dist/${CND_CONF}/${IMAGE_TYPE}/Heater_Control_710A.X.${IMAGE_TYPE}.cof" 
 	@mv ${OBJECTDIR}/Main.hex "dist/${CND_CONF}/${IMAGE_TYPE}/Heater_Control_710A.X.${IMAGE_TYPE}.hex"
 else 
-	${MP_CC}  out=""${OBJECTDIR}"" Main.c +EXPORT +FD +DF +CC  #__DEBUG=1 +ICD +Y=9 +EA +DF +LN +T +A +M +J +EA +Z -P #__dsPIC33FJ256GP710A__=1 +EXPORTD="${OBJECTDIR}"  
+	${MP_CC}  out=""${OBJECTDIR}"" Main.c +EXPORT +FD +DF +CC  #__DEBUG=1 +ICD +Y=9 +EA +DF +LN +T +A +M +J +EA +Z -P #__dsPIC33FJ256GP510__=1 +EXPORTD="${OBJECTDIR}"  
 	
 endif 
 	
@@ -105,11 +111,11 @@ ${OBJECTDIR}/Main.o: Main.c  nbproject/Makefile-${CND_CONF}.mk
 	${MKDIR} ${OBJECTDIR} 
 ifeq (1,1) 
 	${MKDIR} dist/${CND_CONF}/${IMAGE_TYPE} 
-	${MP_CC}  out="${OBJECTDIR}"  Main.c +FD +DF +CC +Y=9 +EA +DF +LN +T +A +M +J +EA +Z -P #__dsPIC33FJ256GP710A__=1 
+	${MP_CC}  out="${OBJECTDIR}"  Main.c +FD +DF +CC +Y=9 +EA +DF +LN +T +A +M +J +EA +Z -P #__dsPIC33FJ256GP510__=1 
 	@mv ${OBJECTDIR}/Main.cof "dist/${CND_CONF}/${IMAGE_TYPE}/Heater_Control_710A.X.${IMAGE_TYPE}.cof" 
 	@mv ${OBJECTDIR}/Main.hex "dist/${CND_CONF}/${IMAGE_TYPE}/Heater_Control_710A.X.${IMAGE_TYPE}.hex"
 else 
-	${MP_CC}  out=""${OBJECTDIR}"" Main.c +EXPORT +FD +DF +CC +Y=9 +EA +DF +LN +T +A +M +J +EA +Z -P #__dsPIC33FJ256GP710A__=1 +EXPORTD="${OBJECTDIR}"  
+	${MP_CC}  out=""${OBJECTDIR}"" Main.c +EXPORT +FD +DF +CC +Y=9 +EA +DF +LN +T +A +M +J +EA +Z -P #__dsPIC33FJ256GP510__=1 +EXPORTD="${OBJECTDIR}"  
 	
 endif 
 	

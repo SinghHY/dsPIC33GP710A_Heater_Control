@@ -8,7 +8,7 @@
 * Version:     
 ************************************************************************/
 
-#include <33FJ256GP710A.h>
+#include <33FJ256GP510.h>
 #fuses XT,NOWDT,NOPROTECT
 #device ADC = 12 
 #use delay(clock = 100MHz, crystal = 40MHz)
@@ -30,7 +30,7 @@ float FKp = 10, FKi = 0.5, FKd = 2, FIntegral = 11, FDerivative = 0;
 int8 SPI_Flag = 0, ADC_Flag = 0, Byte_Count = 0, Rx, Tx, Cmand, ProbeID = 1,count = 0;
 unsigned int8 Version = 2,SP = 0, SP_H = 0, FSP = 0, FSP_H = 0;
 unsigned int Value, Duty = 0, FDuty = 0, Err_cnt = 0, ViewFMV, ViewMV, Set_Point, FSet_Point, Old_SP, FOld_SP;
-unsigned char MV = 0, MVH = 0,  FMVH = 0, FMV = 10;
+unsigned char MV = 230, MVH = 0,  FMVH = 0, FMV = 140;
 
 float Flange;
 /******************************************************************************/
@@ -105,9 +105,9 @@ void main()
    setup_adc(ADC_CLOCK_INTERNAL);
    set_adc_channel(0);
    
-   setup_adc_ports2(sAN2, VSS_VDD);
-   setup_adc2(ADC_CLOCK_INTERNAL);
-   set_adc_channel2(2);
+   //setup_adc_ports2(sAN2, VSS_VDD);
+   //setup_adc2(ADC_CLOCK_INTERNAL);
+   //set_adc_channel2(2);
    
    // Timer 1 for 10 ms INT when clock is 100MHz
    setup_timer1(TMR_INTERNAL | TMR_DIV_BY_64, 7812);
@@ -143,7 +143,7 @@ void main()
       if(ADC_Flag)
       {
         M_Variable= ((float)read_adc() * Alpha) - 4;  // 4 is the offset
-        FM_Variable = ((float)read_adc2() * Alpha);
+        //FM_Variable = ((float)read_adc2() * Alpha);
           
         Error = Set_Point - M_Variable;
             if(Old_SP != Set_Point || Integral < 0)
@@ -165,14 +165,14 @@ void main()
       
       Value = (unsigned int16)M_Variable;
       ViewMV = Value;
-      MV  = (unsigned char)Value;
-      MVH = Value >> 8; 
+      //MV  = (unsigned char)Value;
+      //MVH = Value >> 8; 
       
 
      Value = (unsigned int16)FM_Variable;
      ViewFMV = Value;
-     FMV = (unsigned char)Value;
-     FMVH = Value >> 8;
+     //FMV = (unsigned char)Value;
+     //FMVH = Value >> 8;
 
      FError = FSet_Point - FM_Variable;
 

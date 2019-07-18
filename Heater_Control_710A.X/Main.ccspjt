@@ -1,7 +1,7 @@
 [PROJECT]
 Target=build\default\production\Main.hex
-Processor_Text=DSPIC33FJ256GP710A
-CCSVersion=5.074
+Processor_Text=DSPIC33FJ256GP510
+CCSVersion=5.069
 Compiler=PCD
 [Target Data]
 FileList=Main.c
@@ -9,6 +9,19 @@ FileList=Main.c
 Type=4
 [mru-list]
 1=build\default\production\Main.c
+[build\default\debug\Main.c]
+Type=4
+
+[ProjectLog]
+Days=2
+D1=04-07-2019
+D1_L=2
+D1_L1=[48433]Project Opened.
+D1_L2=[48437]Project Closed.
+D2=05-07-2019
+D2_L=2
+D2_L1=[39059]Project Opened.
+D2_L2=[39107]Project Closed.
 [Units]
 Count=1
 1=Main (main)
